@@ -1,0 +1,4 @@
+/data/raw/
+__pycache__/
+*.py[cod]
+tempCodeRunnerFile.py
