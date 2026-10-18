@@ -1,4 +1,10 @@
 /data/raw/
+.venv/
+.ipynb_checkpoints/
+/models/*.h5
+/models/*.keras
+/models/*.pt
+/reports/
 __pycache__/
 *.py[cod]
 tempCodeRunnerFile.py

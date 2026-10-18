@@ -1,30 +1,35 @@
-import os, random
-import cv2, numpy as np
-from .config import valid_ext, image_size, data_dir
+import os
+import random
+
+import cv2
+import numpy as np
+
+from .config import DATA_DIR, IMG_SIZE, VALID_EXT
 
 
-def clean_dataset(data_dir):
+def clean_dataset(root):
     removed = 0
-    for cls in os.listdir(data_dir):
-        cls_dir = os.path.join(data_dir, cls)
+    for cls in os.listdir(root):
+        cls_dir = os.path.join(root, cls)
         if not os.path.isdir(cls_dir):
             continue
         for f in os.listdir(cls_dir):
-            if os.path.splitext(f)[1].lower() not in valid_ext:
-                os.remove(os.path.join(cls_dir, f))
+            path = os.path.join(cls_dir, f)
+            if os.path.isfile(path) and os.path.splitext(f)[1].lower() not in VALID_EXT:
+                os.remove(path)
                 removed += 1
     print(f"Removed {removed} invalid files")
 
 
-def load_dataset(data_dir, img_size=image_size):
+def load_dataset(root, img_size=IMG_SIZE):
     classes = sorted(
-        d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))
+        d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))
     )
     print("Classes:", classes)
     images, labels = [], []
     for cls in classes:
-        cls_dir = os.path.join(data_dir, cls)
-        for f in os.listdir(cls_dir):
+        cls_dir = os.path.join(root, cls)
+        for f in sorted(os.listdir(cls_dir)):
             path = os.path.join(cls_dir, f)
             try:
                 img = cv2.imread(path)
@@ -45,5 +50,6 @@ def load_dataset(data_dir, img_size=image_size):
     return np.array(images, dtype=np.uint8), np.array(labels), classes
 
 
-X, y, classes = load_dataset(data_dir)
-print(X.shape, y.shape)
+if __name__ == "__main__":
+    X, y, classes = load_dataset(DATA_DIR)
+    print(X.shape, y.shape)
